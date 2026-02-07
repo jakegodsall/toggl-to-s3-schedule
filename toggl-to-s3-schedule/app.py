@@ -11,8 +11,8 @@ TOGGL_EMAIL = os.environ['TOGGL_EMAIL']
 TOGGL_PASSWORD = os.environ['TOGGL_PASSWORD']
 
 def lambda_handler(event, context):
-    toggl = TogglClient(TOGGL_WORKSPACE_ID, TOGGL_EMAIL, TOGGL_PASSWORD)
-    toggl.get_projects()
+    with TogglClient(TOGGL_WORKSPACE_ID, TOGGL_EMAIL, TOGGL_PASSWORD) as toggl:
+        toggl.get_projects()
 
     return {
         "statusCode": 200,
