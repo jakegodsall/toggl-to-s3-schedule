@@ -1,37 +1,16 @@
 import json
 
-# import requests
+import os
+import requests
+import boto3
 
+TOGGL_WORKSPACE_ID = os.environ['TOGGL_WORKSPACE']
+TOGGL_EMAIL = os.environ['TOGGL_EMAIL']
+TOGGL_PASSWORD = os.environ['TOGGL_PASSWORD']
 
 def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
+    cookie = get_auth_cookie()
+    print(cookie)
 
     return {
         "statusCode": 200,
@@ -40,3 +19,32 @@ def lambda_handler(event, context):
             # "location": ip.text.replace("\n", "")
         }),
     }
+
+def get_auth_cookie():
+    AUTH_ENDPOINT = 'https://accounts.toggl.com/api/sessions'
+
+    headers = {
+        "Accept": "application/json"
+    }
+
+    body = {
+        "email": TOGGL_EMAIL,
+        "password": TOGGL_PASSWORD
+    }
+
+    resp = requests.post(AUTH_ENDPOINT, headers=headers, json=body)
+    resp.raise_for_status()
+    return resp.headers['Set-Cookie'].split('=')[-1]
+
+def get_projects(workspace_id: str):
+    PROJECTS_ENDPOINT = f'https://api.track.toggl.com/api/v9/workspaces/{workspace_id}/projects'
+
+    headers = {
+        "Cookie": "TEST COOKIE",
+        "Accept": "application/json"
+    }
+
+    resp = requests.get(PROJECTS_ENDPOINT, headers=headers)
+    resp.raise_for_status()
+
+    print(resp.text)
