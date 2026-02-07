@@ -4,13 +4,15 @@ import os
 import requests
 import boto3
 
+from toggl_client import TogglClient
+
 TOGGL_WORKSPACE_ID = os.environ['TOGGL_WORKSPACE']
 TOGGL_EMAIL = os.environ['TOGGL_EMAIL']
 TOGGL_PASSWORD = os.environ['TOGGL_PASSWORD']
 
 def lambda_handler(event, context):
-    cookie = get_auth_cookie()
-    get_projects(cookie, TOGGL_WORKSPACE_ID)
+    toggl = TogglClient(TOGGL_WORKSPACE_ID, TOGGL_EMAIL, TOGGL_PASSWORD)
+    toggl.get_projects()
 
     return {
         "statusCode": 200,
@@ -19,33 +21,3 @@ def lambda_handler(event, context):
             # "location": ip.text.replace("\n", "")
         }),
     }
-
-def get_auth_cookie():
-    AUTH_ENDPOINT = 'https://accounts.toggl.com/api/sessions'
-
-    headers = {
-        "Accept": "application/json"
-    }
-
-    body = {
-        "email": TOGGL_EMAIL,
-        "password": TOGGL_PASSWORD
-    }
-
-    resp = requests.post(AUTH_ENDPOINT, headers=headers, json=body)
-    resp.raise_for_status()
-    return {"__Secure-accounts-session": resp.cookies.get("__Secure-accounts-session")}
-
-
-def get_projects(auth_cookie: dict, workspace_id: str):
-    PROJECTS_ENDPOINT = f'https://api.track.toggl.com/api/v9/workspaces/{workspace_id}/projects'
-
-    headers = {
-        "Cookie": f"__Secure-accounts-session={auth_cookie["__Secure-accounts-session"]}",
-        "Accept": "application/json"
-    }
-
-    resp = requests.get(PROJECTS_ENDPOINT, headers=headers)
-    resp.raise_for_status()
-
-    print(resp.text)

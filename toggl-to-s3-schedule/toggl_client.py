@@ -12,3 +12,9 @@ class TogglClient:
         AUTH_ENDPOINT = 'https://accounts.toggl.com/api/sessions'
         resp = self.session.get(AUTH_ENDPOINT, json={"email": email, "password": password})
         resp.raise_for_status()
+
+    def get_projects(self):
+        PROJECTS_ENDPOINT = f'https://api.track.toggl.com/api/v9/workspaces/{self.workspace_id}/projects'
+        resp = self.session.get(PROJECTS_ENDPOINT)
+        resp.raise_for_status()
+        print(resp.text)
