@@ -1,3 +1,4 @@
+from typing import Any
 import requests
 
 class TogglClient:
@@ -30,8 +31,24 @@ class TogglClient:
             mapped.update({ project['id']: project['name'] })
         return mapped
 
-    def get_time_entries(self):
+    def get_time_entries(self) -> list[dict[str, Any]]:
         TIME_ENTRIES_ENDPOINT = "https://api.track.toggl.com/api/v9/me/time_entries"
         resp = self.session.get(TIME_ENTRIES_ENDPOINT)
         resp.raise_for_status()
-        print(resp.text)
+        data = resp.json()
+
+        project_map = self.get_project_map()
+        entries = []
+        for entry in data:
+            project_id = entry.get("project_id")
+            project_name = project_map.get(project_id) if project_id is not None else None
+
+            entries.append({
+                "id": entry["id"],
+                "project_name": project_name,
+                "description": entry["description"],
+                "start": entry["start"],
+                "stop": entry["stop"],
+                "duration": entry["duration"],
+            })
+        return entries
