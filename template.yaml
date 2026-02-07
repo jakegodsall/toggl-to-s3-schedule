@@ -2,7 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Simple Lambda sync function to sync time logs from Toggl to S3
 
+Parameters:
+  TogglS3BucketName:
+    Type: String
+  
 Resources:
+  TogglS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref TogglS3BucketName
+  
   TogglToS3SyncFunction:
     Type: AWS::Serverless::Function
     Properties:
