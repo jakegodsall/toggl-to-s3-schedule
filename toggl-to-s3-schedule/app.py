@@ -10,7 +10,7 @@ TOGGL_PASSWORD = os.environ['TOGGL_PASSWORD']
 
 def lambda_handler(event, context):
     cookie = get_auth_cookie()
-    print(cookie)
+    get_projects(cookie, TOGGL_WORKSPACE_ID)
 
     return {
         "statusCode": 200,
@@ -34,13 +34,14 @@ def get_auth_cookie():
 
     resp = requests.post(AUTH_ENDPOINT, headers=headers, json=body)
     resp.raise_for_status()
-    return resp.headers['Set-Cookie'].split('=')[-1]
+    return {"__Secure-accounts-session": resp.cookies.get("__Secure-accounts-session")}
 
-def get_projects(workspace_id: str):
+
+def get_projects(auth_cookie: dict, workspace_id: str):
     PROJECTS_ENDPOINT = f'https://api.track.toggl.com/api/v9/workspaces/{workspace_id}/projects'
 
     headers = {
-        "Cookie": "TEST COOKIE",
+        "Cookie": f"__Secure-accounts-session={auth_cookie["__Secure-accounts-session"]}",
         "Accept": "application/json"
     }
 
