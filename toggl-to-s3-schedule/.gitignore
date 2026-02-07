@@ -1,0 +1,5 @@
+# Deployment
+.scripts/
+
+# AWS SAM
+.aws-sam
