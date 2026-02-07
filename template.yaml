@@ -21,8 +21,7 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
-          Type: Api
+        Schedule:
+          Type: ScheduleV2
           Properties:
-            Path: /hello
-            Method: get
+            ScheduleExpression: "cron(0 3 * * ? *)"
