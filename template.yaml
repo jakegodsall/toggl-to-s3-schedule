@@ -8,6 +8,12 @@ Parameters:
   TogglWorkspaceId:
     Type: String
     NoEcho: true
+  TogglEmail:
+    Type: String
+    NoEcho: true
+  TogglPassword:
+    Type: String
+    NoEcho: true
   
 Resources:
   TogglS3Bucket:
@@ -26,6 +32,8 @@ Resources:
       Environment:
         Variables:
           TOGGL_WORKSPACE: !Ref TogglWorkspaceId
+          TOGGL_EMAIL: !Ref TogglEmail
+          TOGGL_PASSWORD: !Ref TogglPassword
       Events:
         Schedule:
           Type: ScheduleV2
