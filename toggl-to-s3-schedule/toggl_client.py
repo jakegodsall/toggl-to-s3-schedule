@@ -24,3 +24,9 @@ class TogglClient:
         resp = self.session.get(PROJECTS_ENDPOINT)
         resp.raise_for_status()
         print(resp.text)
+
+    def get_time_entries(self):
+        TIME_ENTRIES_ENDPOINT = "https://api.track.toggl.com/api/v9/me/time_entries"
+        resp = self.session.get(TIME_ENTRIES_ENDPOINT)
+        resp.raise_for_status()
+        print(resp.text)
