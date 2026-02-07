@@ -19,11 +19,16 @@ class TogglClient:
         resp = self.session.post(AUTH_ENDPOINT, json={"email": email, "password": password})
         resp.raise_for_status()
 
-    def get_projects(self):
+    def get_project_map(self) -> dict[int, str]:
         PROJECTS_ENDPOINT = f'https://api.track.toggl.com/api/v9/workspaces/{self.workspace_id}/projects'
         resp = self.session.get(PROJECTS_ENDPOINT)
         resp.raise_for_status()
-        print(resp.text)
+        data = resp.json()
+
+        mapped = {}
+        for project in data:
+            mapped.update({ project['id']: project['name'] })
+        return mapped
 
     def get_time_entries(self):
         TIME_ENTRIES_ENDPOINT = "https://api.track.toggl.com/api/v9/me/time_entries"
