@@ -34,7 +34,7 @@ class TogglClient:
         return mapped
 
     def get_time_entries(self, d: date) -> list[dict[str, Any]]:
-        start_date = d.isoformat()                       # "2026-02-07"
+        start_date = d.isoformat()
         end_date = (d + timedelta(days=1)).isoformat()
 
         TIME_ENTRIES_ENDPOINT = "https://api.track.toggl.com/api/v9/me/time_entries"
