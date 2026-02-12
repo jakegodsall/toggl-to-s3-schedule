@@ -3,3 +3,6 @@
 
 # AWS SAM
 .aws-sam
+
+# Python
+__pycache__/

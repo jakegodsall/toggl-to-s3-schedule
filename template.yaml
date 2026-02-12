@@ -34,6 +34,12 @@ Resources:
           TOGGL_WORKSPACE: !Ref TogglWorkspaceId
           TOGGL_EMAIL: !Ref TogglEmail
           TOGGL_PASSWORD: !Ref TogglPassword
+          S3_BUCKET_NAME: !Ref TogglS3BucketName
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: s3:PutObject
+              Resource: !Sub "arn:aws:s3:::${TogglS3BucketName}/*"
       Events:
         Schedule:
           Type: ScheduleV2
