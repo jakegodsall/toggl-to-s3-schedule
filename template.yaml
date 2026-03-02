@@ -16,17 +16,13 @@ Parameters:
     NoEcho: true
   
 Resources:
-  TogglS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Ref TogglS3BucketName
-  
   TogglToS3SyncFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: toggl-to-s3-schedule/
       Handler: app.lambda_handler
       Runtime: python3.14
+      Timeout: 90
       Architectures:
       - x86_64
       Environment:
